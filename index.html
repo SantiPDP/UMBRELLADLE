@@ -1,0 +1,128 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Umbrelladle | Adivina el personaje de Resident Evil</title>
+
+    <meta name="description" content="Umbrelladle es un juego diario inspirado en Wordle donde debes adivinar personajes de Resident Evil usando pistas sobre género, organización, rol y nacionalidad.">
+    
+    <meta name="keywords" content="Resident Evil, Wordle, Umbrelladle, juego Resident Evil, personajes Resident Evil">
+
+    <meta name="author" content="Santiago D'Elía">
+    
+    <meta name="theme-color" content="#8b0000">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="icon" href="imagenes/favicon.png">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="pantallaCarga">
+    <div class="loader-contenido">
+        <h1>UMBRELLA CORPORATION</h1>
+
+        <div class="barra">
+            <div class="progreso"></div>
+        </div>
+
+        <p>Inicializando sistema...</p>
+    </div>
+</div>
+
+<div class="contenedor">
+
+   <h1 class="titulo">
+    <span class="umbrella">UMBRELLA</span><span class="dle">DLE</span>
+</h1>
+
+    <p class="subtitulo">
+☣️ IDENTIFICÁ AL SUJETO DEL DÍA ☣️
+</p>
+
+    <div id="temporizador"></div>
+
+    <div id="estadisticas">
+        <span>Partidas: <b id="partidas">0</b></span>
+        |
+        <span>Victorias: <b id="victorias">0</b></span>
+        |
+        <span>Racha: <b id="racha">0</b></span>
+        |
+        <span>Mejor: <b id="mejor">-</b></span>
+    </div>
+
+    <div id="victoria"></div>
+
+<div id="tarjetaVictoria"></div>
+
+<div class="barra-busqueda">
+
+    <div class="busqueda-container">
+
+        <input
+            type="text"
+            id="busqueda"
+            placeholder="Nombre del personaje..."
+            autocomplete="off"
+        >
+
+        <div id="sugerencias"></div>
+
+    </div>
+
+    <button
+        id="botonAdivinar"
+        onclick="adivinar()">
+        ADIVINAR
+    </button>
+
+</div>
+
+
+<div class="botones-extra">
+
+    <button
+        id="botonHistorial"
+        onclick="mostrarHistorial()">
+        📖 Historial
+    </button>
+
+    <button
+        id="botonCompartir"
+        style="display:none;"
+        onclick="compartirResultado()">
+        📋 Compartir resultado
+    </button>
+
+</div>
+
+<div id="panelHistorial" style="display:none;">
+    <div id="contenidoHistorial"></div>
+</div>
+
+    <table id="tabla">
+        <thead>
+            <tr>
+                <th>Personaje</th>
+                <th>Género</th>
+                <th>Primera aparición</th>
+                <th>Organización</th>
+                <th>Rol</th>
+                <th>Nacionalidad</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
+
+<script src="personajes.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
