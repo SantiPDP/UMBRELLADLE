@@ -433,7 +433,7 @@ document.getElementById("busqueda").addEventListener("keydown", function(event){
         actualizarSeleccion(opciones);
     } else if(event.key === "Enter"){
         if(indiceSeleccionado >= 0 && opciones[indiceSeleccionado]){
-            inputBusqueda.value       = opciones[indiceSeleccionado].textContent;
+            inputBusqueda.value = opciones[indiceSeleccionado].querySelector("span").textContent.trim();
             sugerencias.style.display = "none";
             indiceSeleccionado        = -1;
         } else {
