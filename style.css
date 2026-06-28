@@ -1,874 +1,868 @@
-body{
-    font-family:'Bebas Neue', sans-serif;
-    background:#000;
-    color:white;
-    text-align:center;
-    margin:0;
-
-    background-image:url("imagenes/umbrella.jpg");
-    background-size:cover;
-    background-position:center 10%;
-    background-repeat:no-repeat;
-    background-attachment:fixed;
+/* ============================================
+   BASE & RESET
+   ============================================ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-
-    background:
-    linear-gradient(
-        rgba(0,0,0,.75),
-        rgba(0,0,0,.85)
-    );
-
-    z-index:-1;
-}
-.contenedor{
-    width:95%;
-    max-width:1400px;
-
-    margin:20px auto;
-
-    background:transparent;
-
-    padding:20px;
+html {
+    /* Evita que iOS agrande texto automáticamente */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
-h1{
-    color:#d10000;
-    font-size:90px;
-    margin:0;
+body {
+    font-family: 'Bebas Neue', sans-serif;
+    background: #000;
+    color: white;
+    text-align: center;
 
-    font-family:'Bebas Neue', sans-serif;
-    letter-spacing:6px;
+    background-image: url("imagenes/umbrella.jpg");
+    background-size: cover;
+    background-position: center 10%;
+    background-repeat: no-repeat;
 
+    /*
+        CORRECCIÓN IMPORTANTE:
+        background-attachment:fixed está roto en iOS Safari y genera
+        parpadeos / rendimiento terrible en móvil. Se reemplaza por scroll.
+        En desktop se restaura via media query.
+    */
+    background-attachment: scroll;
+
+    /* Elimina el delay de 300ms en taps en toda la app */
+    touch-action: manipulation;
+
+    /* Mejor scroll en iOS */
+    -webkit-overflow-scrolling: touch;
+
+    /* Evita scroll horizontal accidental */
+    overflow-x: hidden;
+}
+
+@media (min-width: 1024px) {
+    body {
+        /* Solo en desktop donde funciona correctamente */
+        background-attachment: fixed;
+    }
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(rgba(0,0,0,.75), rgba(0,0,0,.85));
+    z-index: -1;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL
+   ============================================ */
+.contenedor {
+    width: 95%;
+    max-width: 1400px;
+    margin: 20px auto;
+    background: transparent;
+    padding: 20px;
+    /* Evita que el contenido toque los bordes en móvil */
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+}
+
+/* ============================================
+   TIPOGRAFÍA — TÍTULO
+   ============================================ */
+.titulo {
+    font-family: 'Bebas Neue', sans-serif;
+    /*
+        CORRECCIÓN CLAVE:
+        110px fijo → clamp() que se adapta a cualquier pantalla.
+        En celular de 360px queda ~65px, en desktop vuelve a 110px.
+    */
+    font-size: clamp(52px, 18vw, 110px);
+    letter-spacing: clamp(2px, 1.5vw, 6px);
+    margin: 0;
+    text-align: center;
+    /* Evita que el título se parta en dos líneas raramente */
+    white-space: nowrap;
+}
+
+.umbrella {
+    color: #ff0000;
     text-shadow:
-    0 0 10px #8b0000,
-    0 0 25px #ff0000;
-
-    animation:brillo 2s infinite alternate;
+        0 0 10px #8b0000,
+        0 0 25px #ff0000;
 }
 
-p{
-    color:#ccc;
+.dle {
+    color: white;
+    text-shadow: 0 0 10px rgba(255,255,255,.4);
 }
 
-input{
-    width:100%;
-    height:70px;
+/* h1 genérico (pantalla de carga) */
+h1 {
+    color: #d10000;
+    font-size: clamp(36px, 10vw, 90px);
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: clamp(2px, 1vw, 6px);
+    text-shadow:
+        0 0 10px #8b0000,
+        0 0 25px #ff0000;
+    animation: brillo 2s infinite alternate;
+}
 
-    background:rgba(10,10,10,.95);
+p {
+    color: #ccc;
+}
 
-    border:1px solid #666;
+.subtitulo {
+    font-family: 'Bebas Neue', sans-serif;
+    /* 30px fijo → clamp adaptable */
+    font-size: clamp(16px, 5vw, 30px);
+    letter-spacing: 2px;
+    color: #cccccc;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px rgba(255,255,255,.2);
+}
 
-    border-radius:0;
+/* ============================================
+   ESTADÍSTICAS Y TEMPORIZADOR
+   ============================================ */
+#estadisticas {
+    margin: 15px 0;
+    color: #d0d0d0;
+    font-family: 'Bebas Neue', sans-serif;
+    /* 20px fijo → adaptable */
+    font-size: clamp(13px, 3.5vw, 20px);
+    letter-spacing: 1px;
+    /* Permite que los items se partan en 2 líneas si no entran */
+    flex-wrap: wrap;
+    gap: 4px;
+}
 
-    color:white;
+#temporizador {
+    color: #d10000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(20px, 5vw, 30px);
+    letter-spacing: 2px;
+    text-shadow:
+        0 0 8px #8b0000,
+        0 0 18px #ff0000;
+}
 
-    font-size:20px;
+/* ============================================
+   BARRA DE BÚSQUEDA
+   ============================================ */
+.barra-busqueda {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    margin: 25px auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /*
+        CORRECCIÓN: en móvil apila input arriba y botón abajo
+        para que ambos tengan tamaño cómodo para el dedo
+    */
+    flex-wrap: wrap;
+}
 
-    padding:0 20px;
+.busqueda-container {
+    position: relative;
+    flex: 1;
+    /* Mínimo para que no quede demasiado chico */
+    min-width: 200px;
+}
 
-    outline:none;
+#busqueda {
+    width: 100%;
+    height: 60px;
+    font-size: clamp(15px, 4vw, 18px);
+    border: 1px solid #555;
+    border-radius: 0;
+    background: rgba(15,15,15,.95);
+    color: white;
+    box-sizing: border-box;
+    padding: 0 20px;
+    outline: none;
+    transition: .25s;
+    /* Evita zoom automático en iOS cuando font-size < 16px */
+    font-size: max(16px, 1em);
+}
 
+#busqueda::placeholder {
+    color: #888;
+    font-size: clamp(15px, 4vw, 21px);
+}
+
+#busqueda:focus {
+    border-color: #b00000;
+    box-shadow: inset 0 0 10px rgba(176,0,0,.3);
+}
+
+/* ============================================
+   BOTONES — BASE
+   ============================================ */
+button {
+    /*
+        min 44px de alto: tamaño mínimo recomendado por Apple y Google
+        para que el dedo pueda tapear sin errores
+    */
+    min-height: 44px;
+    padding: 12px 28px;
+    background: rgba(20,0,0,.65);
+    border: 2px solid #d10000;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    font-size: clamp(13px, 3.5vw, 15px);
+    cursor: pointer;
+    transition: .25s;
+    text-transform: uppercase;
+    backdrop-filter: blur(3px);
+    /* Elimina el flash azul/gris al tapear en Android */
+    -webkit-tap-highlight-color: transparent;
+    /* Sin delay en el tap */
+    touch-action: manipulation;
+}
+
+button:hover {
+    background: rgba(209,0,0,.15);
     box-shadow:
-    inset 0 0 10px rgba(255,255,255,.05);
-
-    transition:.25s;
+        0 0 10px rgba(209,0,0,.6),
+        0 0 25px rgba(255,0,0,.4);
+    transform: translateY(-2px);
 }
 
-input::placeholder{
-    color:#888;
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
-input:focus{
-
-    border-color:#ff0000;
-
-    box-shadow:
-    0 0 10px rgba(255,0,0,.6),
-    inset 0 0 10px rgba(255,0,0,.15);
-}
-
-.barra-busqueda{
-    position:relative;
-    width:90%;
-    max-width:900px;
-    margin:25px auto;
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-#busqueda{
-    flex:1;
-}
-
-.barra-busqueda input{
-
-    flex:1;
-    height:55px;
-
-    background:rgba(15,15,15,.92);
-
-    border:1px solid #444;
-
-    border-radius:0;
-
-    color:white;
-
-    font-size:18px;
-
-    padding:0 20px;
-
-    box-shadow:none;
-}
-
-#busqueda::placeholder{
-    font-size:21px;
-}
-
-.barra-busqueda input:focus{
-
-    border-color:#b00000;
-
-    box-shadow:
-    inset 0 0 10px rgba(176,0,0,.3);
-}
-
-.barra-busqueda button{
-
-    height:55px;
-
-    padding:0 35px;
-
-    background:
-    linear-gradient(
-        to bottom,
-        #8b0000,
-        #5c0000
-    );
-
-    border:1px solid #666;
-
-    border-radius:0;
-
-    color:white;
-
-    font-weight:bold;
-
-    text-transform:uppercase;
-
-    box-shadow:none;
-}
-
-.barra-busqueda button:hover{
-
-    background:
-    linear-gradient(
-        to bottom,
-        #b00000,
-        #700000
-    );
-
-    transform:none;
-}
-
-.botones-extra{
-    display:flex;
-    justify-content:center;
-    gap:12px;
-    margin-bottom:25px;
-    flex-wrap:wrap;
-}
-
-button{
-    padding:12px 28px;
-
-    background:rgba(20,0,0,.65);
-
-    border:2px solid #d10000;
-
-    border-radius:12px;
-
-    color:white;
-
-    font-weight:bold;
-
-    font-size:15px;
-
-    cursor:pointer;
-
-    transition:.25s;
-
-    text-transform:uppercase;
-
-    backdrop-filter:blur(3px);
-}
-
-button:hover{
-
-    background:rgba(209,0,0,.15);
-
-    box-shadow:
-    0 0 10px rgba(209,0,0,.6),
-    0 0 25px rgba(255,0,0,.4);
-
-    transform:translateY(-2px);
-}
-
-button:disabled{
-
-    opacity:.5;
-
-    cursor:not-allowed;
-
-    box-shadow:none;
-}
-
-table{
-
-    width:95%;
-
-    margin:30px auto;
-
-    border-collapse:separate;
-
-    border-spacing:4px;
-
-    background:transparent;
-}
-
-#botonAdivinar{
-
-    border-color:#d10000;
-
-    color:#ffffff;
-
-    font-size:16px;
-}
-
+/* Botones principales: Adivinar, Historial, Compartir */
 #botonHistorial,
 #botonCompartir,
-#botonAdivinar{
-
-    height:50px;
-    
-    font-size:21px;
-    
-    padding:0 30px;
-
-    background:rgba(80,0,0,.85);
-
-    border:1px solid #d10000;
-
-    font-family:'Bebas Neue', sans-serif;
-
-    color:white;
-
-    text-transform:uppercase;
-
-    letter-spacing:1px;
-
-    border-radius:0;
-
-    box-shadow:
-    inset 0 0 10px rgba(255,0,0,.25);
+#botonAdivinar {
+    height: 55px;
+    font-size: clamp(16px, 4.5vw, 21px);
+    padding: 0 clamp(15px, 4vw, 30px);
+    background: rgba(80,0,0,.85);
+    border: 1px solid #d10000;
+    font-family: 'Bebas Neue', sans-serif;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 0;
+    box-shadow: inset 0 0 10px rgba(255,0,0,.25);
 }
 
 #botonHistorial:hover,
-#botonCompartir:hover{
-
-    background:
-    linear-gradient(
-        to bottom,
-        #b00000,
-        #700000
-    );
-
-    transform:none;
+#botonCompartir:hover {
+    background: linear-gradient(to bottom, #b00000, #700000);
+    transform: none;
 }
 
-th{
-    background:
-    linear-gradient(
-        to bottom,
-        #8b0000,
-        #550000
-    );
-
-    border:1px solid #d10000;
-
-    color:white;
-
-    font-size:13px;
-
-    letter-spacing:2px;
-
-    text-transform:uppercase;
-
-    padding:18px;
+/* Botón adivinar dentro de la barra de búsqueda */
+.barra-busqueda button {
+    height: 55px;
+    padding: 0 clamp(18px, 5vw, 35px);
+    background: linear-gradient(to bottom, #8b0000, #5c0000);
+    border: 1px solid #666;
+    border-radius: 0;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: none;
+    /* En móvil ocupa todo el ancho cuando se apila */
+    white-space: nowrap;
 }
 
-th,td{
-    padding:12px;
-    border:1px solid #333;
+.barra-busqueda button:hover {
+    background: linear-gradient(to bottom, #b00000, #700000);
+    transform: none;
 }
 
-td{
-    background:rgba(15,15,15,.95);
-
-    border:1px solid #333;
-
-    color:#ddd;
-
-    padding:16px;
+/* ============================================
+   BOTONES EXTRA (Historial, Compartir)
+   ============================================ */
+.botones-extra {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
 }
 
-
-.correcto{
-
-    background:rgba(0,120,40,.9);
-
-    border:1px solid #00ff66;
-
-    box-shadow:
-    inset 0 0 15px rgba(0,255,100,.3);
+/* ============================================
+   AUTOCOMPLETADO — SUGERENCIAS
+   ============================================ */
+#sugerencias {
+    position: absolute;
+    top: 62px;
+    left: 0;
+    width: 100%;
+    background: rgba(15,15,15,.98);
+    border: 1px solid #d10000;
+    border-radius: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 0 15px rgba(255,0,0,.25);
 }
 
-.parcial{
-
-    background:rgba(170,90,0,.9);
-
-    border:1px solid #ff9900;
-
-    box-shadow:
-    inset 0 0 15px rgba(255,150,0,.3);
+.sugerencia {
+    padding: 18px 20px;
+    font-size: clamp(15px, 4vw, 18px);
+    color: #ddd;
+    text-align: left;
+    cursor: pointer;
+    background: rgba(15,15,15,.95);
+    border-bottom: 1px solid #222;
+    transition: .15s;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.incorrecto{
-
-    background:rgba(40,40,40,.9);
-
-    border:1px solid #555;
+.sugerencia:hover,
+.sugerencia-seleccionada {
+    background: rgba(139,0,0,.6);
+    color: white;
 }
 
-#victoria{
-    margin-top:20px;
+#sugerencias::-webkit-scrollbar { width: 10px; }
+#sugerencias::-webkit-scrollbar-track { background: #111; }
+#sugerencias::-webkit-scrollbar-thumb { background: #8b0000; }
+#sugerencias::-webkit-scrollbar-thumb:hover { background: #b00000; }
+
+/* ============================================
+   TABLA DE INTENTOS
+   ============================================ */
+table {
+    width: 95%;
+    margin: 30px auto;
+    border-collapse: separate;
+    border-spacing: 4px;
+    background: transparent;
 }
 
-#victoria h2{
-    color:#00ff66;
-    text-shadow:0 0 10px #00ff66;
+/*
+    CORRECCIÓN CRÍTICA PARA MÓVIL:
+    La tabla tiene 6 columnas. En pantallas chicas se hace scroll
+    horizontal en vez de deformarse. Se envuelve en un contenedor
+    scrolleable (ver nota abajo para el HTML).
+*/
+#tabla {
+    /*
+        Tamaño mínimo para que las celdas no queden ilegibles.
+        El scroll horizontal lo maneja el wrapper .tabla-wrapper en el HTML.
+    */
+    min-width: 560px;
 }
 
-#estadisticas{
-    margin:15px 0;
-
-    color:#d0d0d0;
-
-    font-family:'Bebas Neue', sans-serif;
-
-    font-size:20px;
-
-    letter-spacing:1px;
+th {
+    background: linear-gradient(to bottom, #8b0000, #550000);
+    border: 1px solid #d10000;
+    color: white;
+    /* 22px fijo → adaptable */
+    font-size: clamp(11px, 2.5vw, 22px);
+    letter-spacing: clamp(0.5px, 0.5vw, 2px);
+    text-transform: uppercase;
+    padding: clamp(8px, 2vw, 18px);
 }
 
-#temporizador{
-    color:#d10000;
-
-    font-family:'Bebas Neue', sans-serif;
-
-    font-size:30px;
-
-    letter-spacing:2px;
-
-    text-shadow:
-    0 0 8px #8b0000,
-    0 0 18px #ff0000;
+th, td {
+    padding: clamp(8px, 2vw, 12px);
+    border: 1px solid #333;
 }
 
-.tarjeta-ganador{
-    width:320px;
-    margin:20px auto;
-    background:#111;
-    border:3px solid #00ff66;
-    border-radius:15px;
-    padding:20px;
-    box-shadow:0 0 30px #00ff66;
+td {
+    background: rgba(15,15,15,.95);
+    border: 1px solid #333;
+    color: #ddd;
+    /* 22px fijo → adaptable */
+    font-size: clamp(12px, 3vw, 22px);
+    letter-spacing: 0.5px;
+    padding: clamp(8px, 2vw, 16px);
+}
 
+#tabla td { font-size: clamp(12px, 3vw, 22px); letter-spacing: 0.5px; }
+#tabla th { font-size: clamp(11px, 2.5vw, 22px); letter-spacing: clamp(0.5px, 0.5vw, 2px); }
+
+/* Estados de celda */
+.correcto {
+    background: rgba(0,120,40,.9);
+    border: 1px solid #00ff66;
+    box-shadow: inset 0 0 15px rgba(0,255,100,.3);
+}
+
+.parcial {
+    background: rgba(170,90,0,.9);
+    border: 1px solid #ff9900;
+    box-shadow: inset 0 0 15px rgba(255,150,0,.3);
+}
+
+.incorrecto {
+    background: rgba(40,40,40,.9);
+    border: 1px solid #555;
+}
+
+/* ============================================
+   VICTORIA
+   ============================================ */
+#victoria { margin-top: 20px; }
+
+#victoria h2 {
+    color: #00ff66;
+    text-shadow: 0 0 10px #00ff66;
+}
+
+.tarjeta-ganador {
+    width: min(320px, 90vw); /* nunca más ancha que la pantalla */
+    margin: 20px auto;
+    background: #111;
+    border: 3px solid #00ff66;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 30px #00ff66;
     animation: victoriaZoom .7s ease;
 }
 
-@keyframes victoriaZoom{
-
-0%{
-opacity:0;
-transform:scale(.5) rotate(-5deg);
-filter:blur(10px);
+.tarjeta-ganador img {
+    width: min(220px, 70vw);
+    height: auto;       /* CORRECCIÓN: altura fija puede distorsionar en móvil */
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid white;
 }
 
-60%{
-transform:scale(1.08) rotate(1deg);
+.tarjeta-ganador h2 { color: #00ff66; }
+
+/* ============================================
+   PANTALLA DE CARGA
+   ============================================ */
+#pantallaCarga { display: none; }
+
+.loader-contenido {
+    width: min(400px, 90vw);
+    text-align: center;
 }
 
-100%{
-opacity:1;
-transform:scale(1) rotate(0);
-filter:blur(0);
+.loader-contenido h1 { font-size: clamp(24px, 8vw, 40px); }
+
+.barra {
+    width: 100%;
+    height: 25px;
+    background: #222;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
 }
 
+.progreso {
+    height: 100%;
+    width: 0%;
+    background: #d10000;
+    animation: cargar 2.5s forwards;
 }
 
-.tarjeta-ganador img{
-    width:220px;
-    height:300px;
-    object-fit:cover;
-    border-radius:10px;
-    border:2px solid white;
-}
-
-.tarjeta-ganador h2{
-    color:#00ff66;
-}
-
-#pantallaCarga{
-    display:none;
-}
-  
-
-.loader-contenido{
-    width:400px;
-    text-align:center;
-}
-
-.loader-contenido h1{
-    font-size:40px;
-}
-
-.barra{
-    width:100%;
-    height:25px;
-    background:#222;
-    border-radius:10px;
-    overflow:hidden;
-    margin:20px 0;
-}
-
-.progreso{
-    height:100%;
-    width:0%;
-    background:#d10000;
-    animation:cargar 2.5s forwards;
-}
-
-@keyframes cargar{
-    from{
-        width:0%;
-    }
-    to{
-        width:100%;
-    }
-}
-
-@keyframes aparecer{
-    from{
-        opacity:0;
-        transform:scale(.8);
-    }
-    to{
-        opacity:1;
-        transform:scale(1);
-    }
-}
-
-@keyframes brillo{
-    from{
-        text-shadow:0 0 10px #d10000;
-    }
-    to{
-        text-shadow:0 0 25px red;
-    }
-}
-
-@media(max-width:768px){
-
-    .titulo{
-        font-size:55px;
-        letter-spacing:3px;
-    }
-
-    .subtitulo{
-        font-size:20px;
-    }
-
-    #estadisticas{
-        font-size:14px;
-    }
-
-    #temporizador{
-        font-size:22px;
-    }
-
-    #tabla th,
-    #tabla td{
-        font-size:13px;
-        padding:6px;
-    }
-
-    #botonHistorial,
-    #botonCompartir,
-    #botonAdivinar{
-        font-size:16px;
-        height:42px;
-        padding:0 15px;
-    }
-
-    #busqueda{
-        font-size:16px;
-    }
-}
-#tabla tbody tr{
-    animation: aparecerFila .4s ease;
-}
-
-@keyframes aparecerFila{
-
-0%{
-opacity:0;
-transform:translateY(20px) scale(.95);
-}
-
-100%{
-opacity:1;
-transform:translateY(0) scale(1);
-}
-
-}
-
-.bloqueado{
-    opacity:0.5;
-    cursor:not-allowed;
-    pointer-events:none;
-}
-#panelHistorial{
-    width: 650px;
-    max-width: 90%;
+/* ============================================
+   HISTORIAL
+   ============================================ */
+#panelHistorial {
+    width: min(650px, 90%);
     margin: 20px auto;
     padding: 15px;
 }
 
-#panelHistorial h2{
-    color:#00ff66;
-    text-shadow:0 0 10px #00ff66;
+#panelHistorial h2 {
+    color: #00ff66;
+    text-shadow: 0 0 10px #00ff66;
     font-family: inherit;
     text-align: center;
     margin-bottom: 15px;
 }
 
-#contenidoHistorial{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-top:15px;
+#contenidoHistorial {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
     margin-top: 10px;
-    text-align:center;
-    font-family:Consolas, monospace;
-    color:#00ff66;
-    line-height:1.8;
+    text-align: center;
+    font-family: Consolas, monospace;
+    color: #00ff66;
+    line-height: 1.8;
 }
 
-.titulo{
-    font-family:'Bebas Neue', sans-serif;
-    font-size:110px;
-    letter-spacing:6px;
-    margin:0;
-    text-align:center;
+.tarjeta-historial {
+    padding: 10px 20px;
+    border: 1px solid #00ff66;
+    color: #ffffff;
+    background: rgba(0,0,0,0.6);
+    display: inline-block;
+    margin: 5px;
+    font-family: 'Bebas Neue', sans-serif;
+    text-transform: uppercase;
 }
 
-.umbrella{
-    color:#ff0000;
-    text-shadow:
-    0 0 10px #8b0000,
-    0 0 25px #ff0000;
+.historial-contenedor {
+    display: inline-block;
+    padding: 15px;
+    border: 1px solid #333;
+    background: rgba(0,0,0,0.4);
+    margin-top: 10px;
 }
 
-.dle{
-    color:white;
-    text-shadow:
-    0 0 10px rgba(255,255,255,.4);
+/* ============================================
+   EXPEDIENTES (HISTORIAL DETALLADO)
+   ============================================ */
+.expediente {
+    width: min(260px, 85vw);
+    background: linear-gradient(to bottom, rgba(20,20,20,.98), rgba(5,5,5,.98));
+    border: 1px solid #8b0000;
+    padding: 18px;
+    text-align: left;
+    font-family: 'Bebas Neue', sans-serif;
+    box-shadow: inset 0 0 10px rgba(255,0,0,.08);
+    transition: .2s;
 }
 
-.busqueda-container{
-    position:relative;
-    flex:1;
+.expediente:hover {
+    border-color: #d10000;
+    box-shadow: 0 0 15px rgba(255,0,0,.25);
 }
 
-#busqueda{
-    width:100%;
-    height:60px;
-
-    font-size:18px;
-
-    border:1px solid #555;
-
-    border-radius:0;
-
-    background:rgba(15,15,15,.95);
-
-    color:white;
-
-    box-sizing:border-box;
+.exp-numero {
+    color: #888;
+    font-size: 18px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
 }
 
-#sugerencias{
+.exp-status {
+    color: #00ff66;
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.exp-personaje {
+    color: white;
+    font-size: clamp(24px, 6vw, 34px);
+    letter-spacing: 1px;
+    border-top: 1px solid #333;
+    padding-top: 10px;
+}
+
+/* ============================================
+   ARCHIVO UMBRELLA (tarjeta de personaje)
+   ============================================ */
+.archivo-umbrella {
+    background: #050505;
+    border: 2px solid #a00000;
+    max-width: min(500px, 95vw);
+    margin: 30px auto;
+    padding: clamp(15px, 4vw, 25px);
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.archivo-header {
+    color: #b30000;
+    font-size: clamp(26px, 8vw, 40px);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.archivo-subtitulo {
+    color: #cccccc;
+    font-size: clamp(16px, 5vw, 25px);
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.archivo-foto {
+    width: min(240px, 70vw);
+    max-width: 100%;
+    border: 1px solid #555;
+    padding: 4px;
+    background: black;
+}
+
+.archivo-nombre {
+    margin-top: 15px;
+    font-size: clamp(28px, 8vw, 45px);
+    color: white;
+    text-transform: uppercase;
+}
+
+.archivo-info {
+    margin-top: 25px;
+    font-size: clamp(16px, 4vw, 25px);
+    text-align: left;
+    max-width: 260px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.archivo-info p {
+    color: #d0d0d0;
+    margin: 8px 0;
+    border-bottom: 1px solid #222;
+    padding-bottom: 5px;
+}
+
+/* ============================================
+   ESTADO BLOQUEADO
+   ============================================ */
+.bloqueado {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ============================================
+   CONTADOR
+   ============================================ */
+.contador {
+    color: white;
+    text-shadow: 0 0 8px rgba(255,255,255,.5);
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes victoriaZoom {
+    0%   { opacity: 0; transform: scale(.5) rotate(-5deg); filter: blur(10px); }
+    60%  { transform: scale(1.08) rotate(1deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); filter: blur(0); }
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: scale(.8); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes brillo {
+    from { text-shadow: 0 0 10px #d10000; }
+    to   { text-shadow: 0 0 25px red; }
+}
+
+@keyframes cargar {
+    from { width: 0%; }
+    to   { width: 100%; }
+}
+
+@keyframes aparecerFila {
+    0%   { opacity: 0; transform: translateY(20px) scale(.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#tabla tbody tr { animation: aparecerFila .4s ease; }
+
+/* Respeta la preferencia de "reducir movimiento" del sistema operativo */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   MEDIA QUERIES — AJUSTES PUNTUALES MÓVIL
+   ============================================ */
+@media (max-width: 480px) {
+    .contenedor {
+        padding: 12px;
+    }
+
+    .barra-busqueda {
+        width: 100%;
+        /* En pantallas muy chicas, el botón ocupa toda la fila */
+        flex-direction: column;
+    }
+
+    .busqueda-container {
+        width: 100%;
+    }
+
+    .barra-busqueda button {
+        width: 100%;
+        height: 50px;
+    }
+
+    #botonHistorial,
+    #botonCompartir {
+        font-size: 16px;
+        height: 46px;
+        padding: 0 16px;
+    }
+
+    /* Tabla: scroll horizontal en vez de aplastar las celdas */
+    .tabla-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        /* Indicador visual de que hay scroll */
+        border-left: 2px solid #8b0000;
+        border-right: 2px solid #8b0000;
+    }
+
+    #tabla {
+        width: 100%;
+    }
+
+    /* Sugerencias no queden cortadas */
+    #sugerencias {
+        max-height: 200px;
+    }
+}
+
+.archivo-umbrella-h {
+    max-width: 620px;
+    margin: 30px auto;
+    background: #050505;
+    border: 2px solid #a00000;
+    font-family: 'Bebas Neue', sans-serif;
+    animation: victoriaZoom .7s ease;
+    overflow: hidden;
+}
+
+.archivo-h-header {
+    background: linear-gradient(to right, #1a0000, #0a0000);
+    border-bottom: 1px solid #a00000;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.archivo-h-corp {
+    color: #b30000;
+    font-size: clamp(16px, 4vw, 22px);
+    letter-spacing: 3px;
+}
+
+.archivo-h-sub {
+    color: #888;
+    font-size: clamp(13px, 3vw, 16px);
+    letter-spacing: 2px;
+}
+
+.archivo-h-body {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.archivo-h-foto {
+    width: clamp(120px, 30vw, 180px);
+    height: clamp(160px, 40vw, 240px);
+    object-fit: cover;
+    object-position: top;
+    border-right: 1px solid #a00000;
+    flex-shrink: 0;
+    display: block;
+}
+
+.archivo-h-info {
+    flex: 1;
+    padding: clamp(14px, 4vw, 24px);
+    text-align: left;
+}
+
+.archivo-h-nombre {
+    color: white;
+    font-size: clamp(24px, 6vw, 42px);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #2a0000;
+    padding-bottom: 12px;
+    line-height: 1;
+}
+
+.archivo-h-datos p {
+    color: #c0c0c0;
+    font-size: clamp(13px, 3vw, 18px);
+    margin: 10px 0;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.archivo-h-label {
+    color: #b30000;
+    margin-right: 10px;
+    letter-spacing: 2px;
+}
+
+#botonIdioma{
     position:absolute;
-    top:72px;
-    left:0;
-    width:100%;
+    top:20px;
+    right:20px;
 
-    background:rgba(15,15,15,.98);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    width:90px;
+    height:45px;
+
+    background:rgba(80,0,0,.9);
 
     border:1px solid #d10000;
 
-    border-radius:0;
+    color:white;
 
-    max-height:300px;
-    overflow-y:auto;
-
-    display:none;
-
-    z-index:9999;
-
-    box-shadow:
-    0 0 15px rgba(255,0,0,.25);
-}
-
-.sugerencia{
-
-    padding:18px 20px;
-
-    font-size:18px;
-
-    color:#ddd;
-
-    text-align:left;
+    font-family:'Bebas Neue', sans-serif;
+    font-size:20px;
 
     cursor:pointer;
 
-    background:rgba(15,15,15,.95);
-
-    border-bottom:1px solid #222;
-
-    transition:.15s;
-}
-
-.sugerencia:hover,
-.sugerencia-seleccionada{
-    background:rgba(139,0,0,.6);
-    color:white;
-}
-
-#sugerencias::-webkit-scrollbar{
-    width:10px;
-}
-
-#sugerencias::-webkit-scrollbar-track{
-    background:#111;
-}
-
-#sugerencias::-webkit-scrollbar-thumb{
-    background:#8b0000;
-}
-
-#sugerencias::-webkit-scrollbar-thumb:hover{
-    background:#b00000;
-}
-
-.subtitulo{
-    font-family:'Bebas Neue', sans-serif;
-
-    font-size:30px;
-
-    letter-spacing:2px;
-
-    color:#cccccc;
-
-    margin-bottom:10px;
-
-    text-shadow:
-    0 0 5px rgba(255,255,255,.2);
-}
-
-.contador{
-    color:white;
-
-    text-shadow:
-    0 0 8px rgba(255,255,255,.5);
-}
-
-.tarjeta-historial{
-    padding:10px 20px;
-    border:1px solid #00ff66;
-    color:#ffffff;
-    background:rgba(0,0,0,0.6);
-    display:inline-block;
-    margin: 5px;
-    font-family:'Bebas Neue', sans-serif;
-    text-transform:uppercase;
-}
-
-.historial-contenedor{
-    display:inline-block;
-    padding:15px;
-    border:1px solid #333;
-    background:rgba(0,0,0,0.4);
-    margin-top:10px;
-}
-
-.archivo-umbrella{
-    background:#050505;
-    border:2px solid #a00000;
-    max-width:500px;
-    margin:30px auto;
-    padding:25px;
-    text-align:center;
-    font-family:'Bebas Neue', sans-serif;
-}
-
-.archivo-header{
-    color:#b30000;
-    font-size:40px;
-    letter-spacing:3px;
-    margin-bottom:10px;
-    text-transform:uppercase;
-    font-family:'Bebas Neue', sans-serif;
-}
-
-.archivo-subtitulo{
-    color:#cccccc;
-    font-size:25px;
-    letter-spacing:2px;
-    margin-bottom:20px;
-    font-family:'Bebas Neue', sans-serif;
-}
-
-.archivo-foto{
-    width:240px;
-    max-width:100%;
-    border:1px solid #555;
-    padding:4px;
-    background:black;
-}
-
-.archivo-nombre{
-    margin-top:15px;
-    font-size:45px;
-    color:white;
-    text-transform:uppercase;
-    font-family:'Bebas Neue', sans-serif;
-}
-
-.archivo-info{
-    margin-top:25px;
-    font-size:25px;
-    text-align:left;
-    max-width:260px;
-    margin-left:auto;
-    margin-right:auto;
-}
-
-.archivo-info p{
-    color:#d0d0d0;
-    margin:8px 0;
-    border-bottom:1px solid #222;
-    padding-bottom:5px;
-    font-family:'Bebas Neue', sans-serif;
-}
-
-#tabla td{
-    font-size:22px;
-    letter-spacing:0.5px;
-}
-
-#tabla th{
-    font-size:22px;
-    letter-spacing:2px;
-}
-
-#contenidoHistorial{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:20px;
-}
-
-.expediente{
-
-    width:260px;
-
-    background:
-    linear-gradient(
-        to bottom,
-        rgba(20,20,20,.98),
-        rgba(5,5,5,.98)
-    );
-
-    border:1px solid #8b0000;
-
-    padding:18px;
-
-    text-align:left;
-
-    font-family:'Bebas Neue', sans-serif;
-
-    box-shadow:
-    inset 0 0 10px rgba(255,0,0,.08);
-
-    transition:.2s;
-}
-
-.expediente:hover{
-
-    border-color:#d10000;
-
-    box-shadow:
-    0 0 15px rgba(255,0,0,.25);
-}
-
-.exp-numero{
-
-    color:#888;
-
-    font-size:18px;
-
-    letter-spacing:2px;
-
-    margin-bottom:10px;
-}
-
-.exp-status{
-
-    color:#00ff66;
-
-    font-size:20px;
-
     letter-spacing:1px;
 
-    margin-bottom:15px;
+    z-index:9999;
 }
 
-.exp-personaje{
+#botonIdioma:hover{
+    background:#a00000;
+}
 
-    color:white;
+@media(max-width:768px){
 
-    font-size:34px;
+    #botonIdioma{
 
-    letter-spacing:1px;
+        top:10px;
+        right:10px;
 
-    border-top:1px solid #333;
+        width:75px;
+        height:40px;
 
-    padding-top:10px;
+        font-size:18px;
+    }
+}
+
+.sugerencia {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sugerencia-foto {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid #444;
+    flex-shrink: 0;
 }
